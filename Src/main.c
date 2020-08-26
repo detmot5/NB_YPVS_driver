@@ -17,18 +17,15 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <TickTimer.h>
-#include <UartPrintf.h>
-#include <HardwareServo.h>
+#include "app.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,8 +37,6 @@
 /* USER CODE BEGIN PD */
 /* USER CODE END PD */
 
-
-
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
@@ -50,15 +45,14 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-tickTimer ledBuiltinTim;
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
-static void initTimers();
-static void ledBuiltinBlink(tickTimer* tim);
 
 /* USER CODE END PFP */
 
@@ -102,18 +96,23 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-  uart_init_printf(&huart1);
-  initTimers();
-  ledBuiltinTim = *tickTimer_Init(&ledBuiltinTim, 500, true, ledBuiltinBlink);
-  HardwareServo_t servo = *hServo_Init(&servo, &servoTim, servoTimChannel, 800, 2200, 0);
+  initPeripherals();
+
+
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    
+#if DEBUG_MODE
+    tickTimer_RunTask(&simulateRPMTim);
+#endif 
 
     tickTimer_RunTask(&ledBuiltinTim);
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -128,7 +127,8 @@ void SystemClock_Config(void)
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
@@ -141,7 +141,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -168,22 +168,11 @@ static void MX_NVIC_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-static void initTimers(void){
-  HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);
-  HAL_TIM_IC_Start(&htim2, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-}
-
-static void ledBuiltinBlink(tickTimer* tim){
-  HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
-}
 
 
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
-  if (TIM2 == htim->Instance){
-    // measure freq handler
-  }
+  handle_TIM_IC_interrupts(htim);
 }
 
 
