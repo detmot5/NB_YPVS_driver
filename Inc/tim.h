@@ -37,9 +37,16 @@ extern TIM_HandleTypeDef htim3;
 #define servoTim htim3
 #define rpmTim htim2
 
-#define servoTimChannel TIM_CHANNEL_1
+
+#define servoTimChannel TIM_CHANNEL_2
+#define servoTimActiveChannel HAL_TIM_ACTIVE_CHANNEL_2
+
 #define rpmTimChannel_1 TIM_CHANNEL_1
 #define rpmTimChannel_2 TIM_CHANNEL_2
+#define rpmTimActiveChannel_1 HAL_TIM_ACTIVE_CHANNEL_1
+#define rpmTimActiveChannel_2 HAL_TIM_ACTIVE_CHANNEL_2
+
+
 /* USER CODE END Private defines */
 
 void MX_TIM2_Init(void);
