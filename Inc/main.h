@@ -47,7 +47,7 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+#define DEBUG_MODE 1
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -60,8 +60,12 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_BUILTIN_Pin GPIO_PIN_13
 #define LED_BUILTIN_GPIO_Port GPIOC
-#define SERVO_PWM_Pin GPIO_PIN_6
-#define SERVO_PWM_GPIO_Port GPIOA
+#define RPM_INPUT_Pin GPIO_PIN_0
+#define RPM_INPUT_GPIO_Port GPIOA
+#define SIM_RPM_Pin GPIO_PIN_2
+#define SIM_RPM_GPIO_Port GPIOA
+#define SERVO_PWM_Pin GPIO_PIN_5
+#define SERVO_PWM_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
