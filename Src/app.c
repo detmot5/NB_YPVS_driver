@@ -1,9 +1,6 @@
-#include "main.h"
-#include "tim.h"
-#include "usart.h"
+#include "framework.h"
 #include "app.h"
-
-
+#include <stdio.h>
 
 // *****Basic ticktimers defines and handlers*******
 
@@ -13,7 +10,11 @@ tickTimer simulateRPMTim;
 #endif 
 
 static void ledBuiltinBlink(tickTimer* tim){
+  char buff[20];
   HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
+  lcd_cls();
+  sprintf(buff, "%ld %d", getEngineFrequency(), getEngineRPM());
+  lcd_str(buff);
   printf("%ld %d \n", getEngineFrequency(), getEngineRPM());
 }
 
@@ -33,15 +34,29 @@ static void initTimers(void){
 }
 
 
+
+//********************** OUTSIDE FUNCTIONS ***************************
+
+
+
 void initPeripherals(void){
 	initTimers();
 	uart_init_printf(&huart1);
+	lcd_init(&hi2c2);
 	ledBuiltinTim = *tickTimer_Init(&ledBuiltinTim, 400, true, ledBuiltinBlink);
 #if DEBUG_MODE
-  simulateRPMTim = *tickTimer_Init(&simulateRPMTim, 5, true, simulateRPMhandler);
+	simulateRPMTim = *tickTimer_Init(&simulateRPMTim, 5, true, simulateRPMhandler);
 #endif
 
 }
+
+void mainLoop(void){
+#if DEBUG_MODE
+	tickTimer_RunTask(&simulateRPMTim);
+#endif 
+	tickTimer_RunTask(&ledBuiltinTim);
+}
+
 
 
 void handle_TIM_IC_interrupts(TIM_HandleTypeDef* htim){
