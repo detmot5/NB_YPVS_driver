@@ -12,7 +12,7 @@ typedef struct _ypvsMapStep{
 
 
 typedef struct _ypvsMap{
-  struct _ypvsMapStep steps[MAX_STEPS];
+  struct _ypvsMapStep* steps;
   uint16_t fullOpenRPM;
   uint16_t openingStartRPM;
 

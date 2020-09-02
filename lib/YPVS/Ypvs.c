@@ -28,22 +28,28 @@ ypvsMapStep steps[MAX_STEPS] = {
 
 
 
-ypvsMapStep* getCurrentStep(ypvsMap* hmap){
-  ypvsMapStep *biggest = &hmap->steps[0];
-  for(uint8_t i = 0; i < MAX_STEPS; i++){
-    printf("%u %u\n",getEngineRPM(), hservo.actualPulseWidth);
-    if(getEngineRPM() < hmap->steps[i].rpm){
-      biggest->rpm = hmap->steps[i].rpm;
-      biggest->ypvsOpenPercentage = hmap->steps[i].ypvsOpenPercentage;
+ypvsMapStep getCurrentStep(ypvsMap* hmap){
+  ypvsMapStep biggest = hmap->steps[0];
+  uint16_t currentRpm = getEngineRPM();
+  for(int i = 0; i < MAX_STEPS; i++){
+
+    if(currentRpm < hmap->steps[i].rpm){
+      biggest = hmap->steps[i];
+      break;
     }
   }
+ // printf("%d %d %d", map.steps[MAX_STEPS-1].rpm, biggest.ypvsOpenPercentage);
+  if(currentRpm >= map.steps[MAX_STEPS-1].rpm) {
+    biggest = map.steps[MAX_STEPS-1];
+  }
+
   return biggest;
 }
 
 
 uint16_t getCurrentServoPulseWidth(ypvsMap* hmap){
-  uint8_t servoPulseInPercent = getCurrentStep(hmap)->ypvsOpenPercentage;
-
+  uint8_t servoPulseInPercent = getCurrentStep(hmap).ypvsOpenPercentage;
+  /*printf("%u %u\n",servoPulseInPercent, hservo.actualPulseWidth);*/
   uint16_t servoPulseWidth = (uint16_t) mapValue(servoPulseInPercent, 0, 100,1000,2200);
   return servoPulseWidth;
 }
@@ -56,11 +62,18 @@ static void selfTest(void){
 }
 
 
+uint8_t getYpvsCurrentPos(){
+  return getCurrentStep(&map).ypvsOpenPercentage;
+}
+
 
 void ypvsInit(void){
   hservo = *hServo_Init(&hservo, &servoTim, servoTimChannel, 800, 2200, 0);
   map = *ypvsMap_Init(&map, steps, 3000, 6000);
   selfTest();
+  for(int i = 0; i < MAX_STEPS; i++){
+    printf("%d %d\n", map.steps[i].rpm, map.steps[i].ypvsOpenPercentage);
+  }
 }
 
 

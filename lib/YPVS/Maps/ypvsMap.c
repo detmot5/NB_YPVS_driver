@@ -23,7 +23,7 @@ static bool ypvsMapCheck(ypvsMap* map){
 
 
 ypvsMap* ypvsMap_Init(ypvsMap* hmap, ypvsMapStep* steps, uint16_t openingStartRPM, uint16_t fullOpenRPM){
-  memcpy(hmap->steps, steps, MAX_STEPS);
+  hmap->steps = steps;
   hmap->fullOpenRPM = fullOpenRPM;
   hmap->openingStartRPM = openingStartRPM;
   ypvsMapCheck(hmap);

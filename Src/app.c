@@ -13,7 +13,7 @@ tickTimer simulateRPMTim;
 
 static void ledBuiltinBlink(tickTimer* tim){
   HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
- // printf("%lu %u \n", getEngineFrequency(), getEngineRPM());
+  printf("%lu %u, %u \n", getEngineFrequency(), getEngineRPM(), getYpvsCurrentPos());
 }
 
 static void runYpvsHandler(tickTimer* tim){
