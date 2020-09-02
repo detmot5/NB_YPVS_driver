@@ -19,7 +19,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -94,7 +93,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_USART1_UART_Init();
-  MX_I2C2_Init();
+  MX_TIM1_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
@@ -110,6 +109,7 @@ int main(void)
   {
     mainLoop();
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -159,6 +159,7 @@ void SystemClock_Config(void)
   */
 static void MX_NVIC_Init(void)
 {
+
   /* TIM2_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(TIM2_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(TIM2_IRQn);
@@ -168,6 +169,10 @@ static void MX_NVIC_Init(void)
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
   handle_TIM_IC_interrupts(htim);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim){
+  handle_TIM_PeriodElapsed_interrupts(htim);
 }
 
 /* USER CODE END 4 */

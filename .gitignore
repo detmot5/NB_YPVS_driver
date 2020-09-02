@@ -4,3 +4,9 @@ Drivers
 .vs
 .pio
 .vscode
+.mxproject
+.idea
+CMakeLists.txt         
+CMakeListsPrivate.txt  
+cmake-build-bluepill_f103c8
+cmake-build-debug

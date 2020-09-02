@@ -3,4 +3,6 @@
 
 
 
+void ypvsInit(void);
+void ypvsRun(void);
 #endif // !YPVS_H

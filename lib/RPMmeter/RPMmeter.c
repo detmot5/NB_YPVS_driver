@@ -17,8 +17,8 @@ void rpmMeterIrqHandler(TIM_HandleTypeDef* htim, uint32_t timChannel){
 		tempFrequency = (SystemCoreClock / timPrescaler) / capturedValue;
 		tempRPM = tempFrequency * MINUTE;
 
-    if(tempFrequency < MAX_FREQ) engineFrequency = tempFrequency;
-    if(tempRPM < MAX_RPM) engineRPM = tempRPM;
+		engineFrequency = tempFrequency;
+    engineRPM = tempRPM;
 
 	} 
 	else {
@@ -29,7 +29,6 @@ void rpmMeterIrqHandler(TIM_HandleTypeDef* htim, uint32_t timChannel){
 
 
 uint16_t getEngineRPM(){
-  
 	return engineRPM;
 }
 

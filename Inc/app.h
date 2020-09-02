@@ -15,7 +15,7 @@ extern tickTimer simulateRPMTim;
 void initPeripherals(void);
 void mainLoop(void);
 void handle_TIM_IC_interrupts(TIM_HandleTypeDef* htim);
-
+void handle_TIM_PeriodElapsed_interrupts(TIM_HandleTypeDef* htim);
 #endif // !APP_H
 
 
