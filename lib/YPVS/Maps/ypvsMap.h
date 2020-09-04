@@ -15,11 +15,11 @@ typedef struct _ypvsMap{
   struct _ypvsMapStep* steps;
   uint16_t fullOpenRPM;
   uint16_t openingStartRPM;
-
+  bool initializedProperly;
 } ypvsMap;
 
 
-
+bool ypvsMap_IsInitialized(ypvsMap* hmap);
 ypvsMap* ypvsMap_Init(ypvsMap* hmap, ypvsMapStep* steps, uint16_t openingStartRPM, uint16_t fullOpenRPM);
 
 

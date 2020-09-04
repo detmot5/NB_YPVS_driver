@@ -75,8 +75,8 @@ ypvsMapStep getCurrentStep(ypvsMap* hmap){
 uint16_t getCurrentServoPulseWidth(ypvsMap* hmap){
   ypvsMapStep currentStep = getCurrentStep(hmap);
   uint8_t servoPulseInPercent = currentStep.ypvsOpenPercentage;
-
   uint16_t servoPulseWidth = (uint16_t) mapValue(servoPulseInPercent, 0, 100,1000,2200);
+
   return servoPulseWidth;
 }
 
@@ -95,14 +95,16 @@ uint8_t getYpvsCurrentPos(){
 
 void ypvsInit(void){
   hservo = *hServo_Init(&hservo, &servoTim, servoTimChannel, 800, 2200, 0);
-  map = *ypvsMap_Init(&map, steps2, 3000, 6000);
+  map = *ypvsMap_Init(&map, steps, 3000, 6000);
   selfTest();
 }
 
 
 void ypvsRun(void){
 
-  hServo_Write_us(&hservo, getCurrentServoPulseWidth(&map));
+  if(ypvsMap_IsInitialized(&map)){
+    hServo_Write_us(&hservo, getCurrentServoPulseWidth(&map));
+  }
   printf("%u %u\n", getCurrentStep(&map).ypvsOpenPercentage, getEngineRPM());
 }
 
