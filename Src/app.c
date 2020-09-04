@@ -17,6 +17,12 @@ static void ledBuiltinBlink(tickTimer* tim){
 }
 
 static void runYpvsHandler(tickTimer* tim){
+  HAL_ADC_Start(&hadc1);
+  while(HAL_ADC_PollForConversion(&hadc1, 2) != HAL_OK);
+  uint32_t adcValue = HAL_ADC_GetValue(&hadc1);
+
+  adcValue = mapValue(adcValue,0, 4095, 3999, 14999);
+  __HAL_TIM_SET_AUTORELOAD(&htim1, adcValue);
   ypvsRun();
 }
 
@@ -48,13 +54,19 @@ void initPeripherals(void){
 	initTimers();
 	uart_init_printf(&huart1);
 	ypvsInit();
+  HAL_ADC_Stop(&hadc1);
+  HAL_ADCEx_Calibration_Start(&hadc1);
+	HAL_ADC_Start(&hadc1);
 	ledBuiltinTim = *tickTimer_Init(&ledBuiltinTim, 500, true, ledBuiltinBlink);
-	ypvsTim = *tickTimer_Init(&ypvsTim, 10, true, runYpvsHandler);
+	ypvsTim = *tickTimer_Init(&ypvsTim, 30, true, runYpvsHandler);
 
 
 }
 
 void mainLoop(void){
+
+
+
 
 	tickTimer_RunTask(&ledBuiltinTim);
 	tickTimer_RunTask(&ypvsTim);
