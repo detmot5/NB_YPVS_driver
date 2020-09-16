@@ -27,7 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app.h"
-
+#include "framework.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -102,13 +102,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   initPeripherals();
-  
-  /* USER CODE END 2 */
 
+  /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+  while (1){
     mainLoop();
     /* USER CODE END WHILE */
 

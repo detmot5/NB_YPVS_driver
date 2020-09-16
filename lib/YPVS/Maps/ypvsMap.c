@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <string.h>
-#include "../../../Inc/framework.h"
+#include "framework.h"
+
 
 #include "ypvsMap.h"
 

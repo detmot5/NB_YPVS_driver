@@ -4,6 +4,6 @@
 #include "Maps/ypvsMap.h"
 
 uint8_t getYpvsCurrentPos();
-void ypvsInit(void);
+void ypvsInit(void (*errorHandler)());
 void ypvsRun(void);
 #endif // !YPVS_H

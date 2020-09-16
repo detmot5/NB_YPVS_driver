@@ -1,5 +1,5 @@
 #include <stdbool.h>
-#include "../../Inc/main.h"
+#include "main.h"
 #include "HardwareServo.h"
 
 // Arduino map function

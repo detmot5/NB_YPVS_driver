@@ -5,11 +5,18 @@
 #include <RPMmeter.h>
 #include <LCD44780_I2C.h>
 
-extern tickTimer ledBuiltinTim;
-#if DEBUG_MODE 
-extern tickTimer simulateRPMTim;
-#endif 
 
+
+#define DEBUG_MODE 0
+
+
+
+
+
+extern tickTimer ledBuiltinTim;
+#if DEBUG_MODE
+extern tickTimer simulateRPMTim;
+#endif
 
 
 void initPeripherals(void);

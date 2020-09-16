@@ -5,13 +5,13 @@
 #include "usart.h"
 #include "adc.h"
 // Major project files
-#include "../lib/RPMmeter/RPMmeter.h"
+#include "RPMmeter/RPMmeter.h"
 
 // Libraries
-#include "../lib/UartPrintf/uartprintf.h"
-#include "../lib/TickTimer/tickTimer.h"
+#include "UartPrintf/uartprintf.h"
+#include "TickTimer/tickTimer.h"
 #include "../lib/HardwareServo/HardwareServo.h"
-#include "../lib/LCD44780_I2C/LCD44780_I2C.h"
+#include "LCD44780_I2C/LCD44780_I2C.h"
 
 
 
