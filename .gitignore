@@ -8,5 +8,7 @@ Drivers
 .idea
 CMakeLists.txt         
 CMakeListsPrivate.txt  
+CMakeListsUser.txt
 cmake-build-bluepill_f103c8
 cmake-build-debug
+
