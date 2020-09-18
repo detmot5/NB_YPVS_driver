@@ -47,7 +47,7 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define DEBUG_MODE 1
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

@@ -1,9 +1,9 @@
 #include <stdbool.h>
-#include "../../Inc/main.h"
+#include "main.h"
 #include "HardwareServo.h"
 
 // Arduino map function
-static inline long mapAngleToPulseWidth(long x, long in_min, long in_max, long out_min, long out_max) {
+static inline long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
@@ -47,7 +47,7 @@ bool hServo_Write_us(HardwareServo_t* hservo, uint32_t pulse){
 
 
 bool hServo_Write_dg(HardwareServo_t* hservo, uint8_t angle){
-	uint16_t pulse = mapAngleToPulseWidth(angle, 0, 180, hservo->minPulseWidth, hservo->maxPulseWidth);
+	uint16_t pulse = map(angle, 0, 180, hservo->minPulseWidth, hservo->maxPulseWidth);
 
 	if(isPulseInCorrectRange(hservo, pulse)){
 		__HAL_TIM_SET_COMPARE(hservo->timer, hservo->timerChannel, pulse);

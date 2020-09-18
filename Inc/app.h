@@ -4,16 +4,24 @@
 #include <UartPrintf.h>
 #include <RPMmeter.h>
 
-extern tickTimer ledBuiltinTim;
-#if DEBUG_MODE 
-extern tickTimer simulateRPMTim;
-#endif 
 
+
+#define DEBUG_MODE 0
+
+
+
+
+
+extern tickTimer ledBuiltinTim;
+#if DEBUG_MODE
+extern tickTimer simulateRPMTim;
+#endif
 
 
 void initPeripherals(void);
+void mainLoop(void);
 void handle_TIM_IC_interrupts(TIM_HandleTypeDef* htim);
-
+void handle_TIM_PeriodElapsed_interrupts(TIM_HandleTypeDef* htim);
 #endif // !APP_H
 
 
