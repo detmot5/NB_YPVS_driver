@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "framework.h"
 #include "app.h"
-#include <Ypvs.h>
+#include "../lib/YpvsDriver/ypvsDriver.h"
+#include "Logic/Ypvs.h"
 
 // *****Basic ticktimers defines and handlers*******
 
@@ -14,7 +15,7 @@ tickTimer simulateRPMTim;
 
 static void ledBuiltinBlink(tickTimer* tim) {
   HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
-  printf("%lu %u, %u \n", getEngineFrequency(), getEngineRPM(), getYpvsCurrentPos());
+  printf("%lu %u \n", getEngineFrequency(), getEngineRPM());
 }
 
 static void runYpvsHandler(tickTimer* tim) {

@@ -1,7 +1,10 @@
-#include "Ypvs.h"
-#include "framework.h"
-
+//
+// Created by norbe on 18/09/2020.
+//
 #include "Maps/ypvsMap.h"
+#include "Logic/Ypvs.h"
+#include "framework.h"
+#include "ypvsDriver.h"
 
 static HardwareServo_t hservo;
 static ypvsMap map;
@@ -37,60 +40,21 @@ ypvsMapStep  steps2[MAX_STEPS] = {
         {6000, 100},
 };
 
-
-static inline uint8_t calculateOffset(uint16_t actualRpm, uint16_t prevRpm) {
-  static uint8_t offset = 0;
-  if(actualRpm < prevRpm) offset = 100;
-  else if(actualRpm > prevRpm) offset = 0;
-  return offset;
-}
-
-
-
-
-ypvsMapStep getCurrentStep(ypvsMap* hmap) {
-  static ypvsMapStep prevStep = {0,0};
-  static uint8_t offset;
-  ypvsMapStep actualStep = hmap->steps[0];
-  uint16_t currentRpm = getEngineRPM();
-
-
-  for(int i = 1; i < MAX_STEPS; i++) {
-    if(currentRpm < hmap->steps[i].rpm - offset){
-      actualStep = hmap->steps[i-1];
-      break;
-    }
-  }
-
-  if(currentRpm >= map.steps[MAX_STEPS-1].rpm - 100) {
-    actualStep = map.steps[MAX_STEPS-1];
-  }
-
-  offset = calculateOffset(actualStep.rpm, prevStep.rpm);
-  prevStep = actualStep;
-
-  return actualStep;
-}
-
-
 uint16_t getCurrentServoPulseWidth(ypvsMap* hmap) {
-  ypvsMapStep currentStep = getCurrentStep(hmap);
+  ypvsMapStep currentStep = getCurrentStep(hmap, getEngineRPM());
   uint8_t servoPulseInPercent = currentStep.ypvsOpenPercentage;
   uint16_t servoPulseWidth = (uint16_t) mapValue(servoPulseInPercent, 0, 100,1300,2400);
 
   return servoPulseWidth;
 }
 
+
+
 static void selfTest(void) {
   hServo_Write_us(&hservo, 2400);
   HAL_Delay(400);
-  hServo_Write_us(&hservo, 1000);
+  hServo_Write_us(&hservo, 1300);
   HAL_Delay(500);
-}
-
-
-uint8_t getYpvsCurrentPos() {
-  return getCurrentStep(&map).ypvsOpenPercentage;
 }
 
 
@@ -112,14 +76,6 @@ void ypvsRun(void){
     ypvsErrorHandler();
   }
 
-  printf("%u %u\n", getCurrentStep(&map).ypvsOpenPercentage, getEngineRPM());
+//  printf("%u %u\n", getCurrentStep(&map).ypvsOpenPercentage, getEngineRPM());
 }
-
-
-
-
-
-
-
-
 

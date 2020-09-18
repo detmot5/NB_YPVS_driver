@@ -3,6 +3,8 @@
 
 #define MAX_STEPS 11
 #define MIN_OPEN_RPM 2000
+#include <stdint.h>
+#include <stdbool.h>
 
 
 typedef struct _ypvsMapStep{

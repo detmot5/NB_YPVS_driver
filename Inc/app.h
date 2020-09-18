@@ -3,7 +3,6 @@
 #include <TickTimer.h>
 #include <UartPrintf.h>
 #include <RPMmeter.h>
-#include <LCD44780_I2C.h>
 
 
 

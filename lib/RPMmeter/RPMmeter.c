@@ -3,7 +3,7 @@
 
 #define MINUTE 60
 #define MAX_RPM 12000
-#define MAX_FREQ 200
+
 
 static volatile uint16_t engineRPM;
 static volatile uint32_t engineFrequency;           // in Hz
