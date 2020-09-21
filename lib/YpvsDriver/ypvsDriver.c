@@ -2,7 +2,7 @@
 // Created by norbe on 18/09/2020.
 //
 #include "Maps/ypvsMap.h"
-#include "Logic/Ypvs.h"
+#include "Ypvs.h"
 #include "framework.h"
 #include "ypvsDriver.h"
 

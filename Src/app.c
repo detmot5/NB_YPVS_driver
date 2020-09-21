@@ -2,12 +2,13 @@
 #include "framework.h"
 #include "app.h"
 #include "../lib/YpvsDriver/ypvsDriver.h"
-#include "Logic/Ypvs.h"
+#include "YPVS/Ypvs.h"
 
 // *****Basic ticktimers defines and handlers*******
 
 tickTimer ledBuiltinTim;
 tickTimer ypvsTim;
+tickTimer rpmStateCheckTim;
 
 #if DEBUG_MODE
 tickTimer simulateRPMTim;
@@ -15,7 +16,7 @@ tickTimer simulateRPMTim;
 
 static void ledBuiltinBlink(tickTimer* tim) {
   HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
-  printf("%lu %u \n", getEngineFrequency(), getEngineRPM());
+  printf("%lu %u %u \n", getEngineFrequency(), getEngineRPM(), getRPMState());
 }
 
 static void runYpvsHandler(tickTimer* tim) {
@@ -29,12 +30,14 @@ static void runYpvsHandler(tickTimer* tim) {
 
 #endif
 
+
   ypvsRun();
 }
 
 static void ypvsErrorHandler(void) {
   puts("YPVS INTERNAL ERROR");
   tickTimer_Stop(&ledBuiltinTim);
+  
   tickTimer_Stop(&ypvsTim);
   HAL_GPIO_WritePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin, GPIO_PIN_SET);
 }
@@ -63,6 +66,7 @@ void initPeripherals(void) {
   HAL_ADC_Start(&hadc1);
   ledBuiltinTim = *tickTimer_Init(&ledBuiltinTim, 200, true, ledBuiltinBlink);
   ypvsTim = *tickTimer_Init(&ypvsTim, 40, true, runYpvsHandler);
+  rpmStateCheckTim = *tickTimer_Init(&rpmStateCheckTim, 250, true, checkRPMstate);
 }
 
 void mainLoop(void) {
