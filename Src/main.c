@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -90,6 +91,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_USART1_UART_Init();
@@ -159,8 +161,17 @@ void SystemClock_Config(void)
 static void MX_NVIC_Init(void)
 {
   /* TIM2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(TIM2_IRQn, 1, 0);
+  HAL_NVIC_SetPriority(TIM2_IRQn, 1, 1);
   HAL_NVIC_EnableIRQ(TIM2_IRQn);
+  /* USART1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USART1_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(USART1_IRQn);
+  /* TIM1_UP_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(TIM1_UP_IRQn, 1, 1);
+  HAL_NVIC_EnableIRQ(TIM1_UP_IRQn);
+  /* DMA1_Channel5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
 }
 
 /* USER CODE BEGIN 4 */

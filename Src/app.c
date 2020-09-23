@@ -4,33 +4,26 @@
 #include "../lib/YpvsDriver/ypvsDriver.h"
 #include "YPVS/Ypvs.h"
 
-// *****Basic ticktimers defines and handlers*******
+
+// ***** Peripheral Handlers *******
 
 tickTimer ledBuiltinTim;
 tickTimer ypvsTim;
 tickTimer rpmStateCheckTim;
 
-#if DEBUG_MODE
-tickTimer simulateRPMTim;
-#endif
 
+UARTDMA_HandleTypeDef huartDma;
+
+char USART1_StringBuffer[50];
+
+
+// ***** Ticktimer Callbacks *******
 static void ledBuiltinBlink(tickTimer* tim) {
   HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
-  printf("%lu %u %u \n", getEngineFrequency(), getEngineRPM(), getRPMState());
+  //printf("%lu %u %u \n", getEngineFrequency(), getEngineRPM(), getRPMState());
 }
 
 static void runYpvsHandler(tickTimer* tim) {
-#if DEBUG_MODE
-
-  HAL_ADC_Start(&hadc1);
-  while ( HAL_ADC_PollForConversion(&hadc1, 2) != HAL_OK ) continue;
-  uint32_t adcValue = HAL_ADC_GetValue(&hadc1);
-  adcValue = mapValue(adcValue, 0, 4095, 3999, 14999);
-  __HAL_TIM_SET_AUTORELOAD(&htim1, adcValue);
-
-#endif
-
-
   ypvsRun();
 }
 
@@ -42,7 +35,7 @@ static void ypvsErrorHandler(void) {
   HAL_GPIO_WritePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin, GPIO_PIN_SET);
 }
 
-// END *****Basic ticktimers defines and handlers*******
+// ***** Initializations *******
 
 
 
@@ -54,24 +47,33 @@ static void initTimers(void) {
 }
 
 
+static void USART1_StringReceivedCallback(UARTDMA_HandleTypeDef* huartdma, char* str){
+  AT_StringParseEventCallback(&atCommandService, str);
+}
+
+
 
 //********************** OUTSIDE FUNCTIONS ***************************
 
 void initPeripherals(void) {
+
   initTimers();
   uart_init_printf(&huart1);
   ypvsInit(ypvsErrorHandler);
-  HAL_ADC_Stop(&hadc1);
-  HAL_ADCEx_Calibration_Start(&hadc1);
-  HAL_ADC_Start(&hadc1);
-  ledBuiltinTim = *tickTimer_Init(&ledBuiltinTim, 200, true, ledBuiltinBlink);
-  ypvsTim = *tickTimer_Init(&ypvsTim, 40, true, runYpvsHandler);
-  rpmStateCheckTim = *tickTimer_Init(&rpmStateCheckTim, 250, true, checkRPMstate);
+
+
+  UARTDMA_Init(&huartDma, &huart1,USART1_StringReceivedCallback);
+  AT_CommandService_Init(&atCommandService, commands, &huart1, AT_CNT);
+
+  tickTimer_Init(&ledBuiltinTim, 200, true, ledBuiltinBlink);
+  tickTimer_Init(&ypvsTim, 40, true, runYpvsHandler);
+  tickTimer_Init(&rpmStateCheckTim, 250, true, checkRPMstate);
 }
 
 void mainLoop(void) {
   tickTimer_RunTask(&ledBuiltinTim);
   tickTimer_RunTask(&ypvsTim);
+  UARTDMA_StringReceivedEvent(&huartDma, USART1_StringBuffer);
 }
 
 
