@@ -15,16 +15,13 @@ static volatile uint8_t rpmState;
 
 void rpmMeterIrqHandler(TIM_HandleTypeDef* htim, uint32_t timChannel) {
 	uint32_t capturedValue = HAL_TIM_ReadCapturedValue(htim, timChannel);
-	uint32_t timPrescaler = htim->Init.Prescaler + 1;
+	const uint32_t timPrescaler = htim->Init.Prescaler + 1;
 
-
-  
 	if(capturedValue != 0) {	
 		engineFrequency = (SystemCoreClock / timPrescaler) / capturedValue;
 		engineRPM = engineFrequency * MINUTE;
 		CircularBuffer_PushBack(&rpmBuffer, engineRPM);
-	} 
-	else {
+	} else {
 		engineFrequency = 0;
 		engineRPM = 0;
 	}
@@ -40,11 +37,11 @@ void checkRPMstate(){
   static uint16_t prevRPM = 0;
   uint32_t actualRPM = getEngineRPM();
 
-  if( (int32_t)(actualRPM - prevRPM) >= 250 ){
+  if( (int32_t)(actualRPM - prevRPM) >= RPM_OFFSET ){
     rpmState = RPM_STATE_INCREASING;
     prevRPM = actualRPM;
   }
-  else if( (int32_t)(prevRPM - actualRPM) >= 250 ){
+  else if( (int32_t)(prevRPM - actualRPM) >= RPM_OFFSET ){
     rpmState = RPM_STATE_DECREASING;
     prevRPM = actualRPM;
   }
