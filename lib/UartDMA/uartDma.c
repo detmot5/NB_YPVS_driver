@@ -10,7 +10,7 @@
  *      Contact: mateusz@msalamon.pl
  *
  *      Modified on: 20.09.2020
- *      Modifications: Norbert Bielak (detmot6)
+ *      Modifications: Norbert Bielak (detmot5)
  */
 
 #include "uartDma.h"
@@ -91,6 +91,8 @@ int UARTDMA_GetCharFromBuffer(UARTDMA_HandleTypeDef *huartdma)
   {
     return -1; // error - no char to return
   }
+
+
   huartdma->UartBufferTail = (huartdma->UartBufferTail + 1) % UART_BUFFER_SIZE;
 
   return huartdma->UART_Buffer[huartdma->UartBufferTail];

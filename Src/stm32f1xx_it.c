@@ -23,8 +23,10 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-/* USER CODE END Includes */
 #include "framework.h"
+#include "gpio.h"
+/* USER CODE END Includes */
+
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -92,6 +94,9 @@ void HardFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+    HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
+    HAL_Delay(10);
+
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
 }

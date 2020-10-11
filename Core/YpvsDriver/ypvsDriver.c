@@ -1,8 +1,7 @@
 //
 // Created by norbe on 18/09/2020.
 //
-#include "Maps/ypvsMap.h"
-#include "Ypvs.h"
+#include "../YPVS/Ypvs.h"
 #include "framework.h"
 #include "ypvsDriver.h"
 
@@ -51,7 +50,7 @@ uint16_t getCurrentServoPulseWidth(ypvsMap* hmap) {
 
 
 static void selfTest(void) {
-  hServo_Write_us(&hservo, 2400);
+  hServo_Write_us(&hservo, 2200);
   HAL_Delay(400);
   hServo_Write_us(&hservo, 1300);
   HAL_Delay(500);
@@ -60,21 +59,20 @@ static void selfTest(void) {
 
 void ypvsInit(void (*errorHandler)()) {
   if(errorHandler) ypvsErrorHandler = errorHandler;
-
-  hservo = *hServo_Init(&hservo, &servoTim, servoTimChannel, 400, 2400, 0);
-  map = *ypvsMap_Init(&map, steps, 3000, 6000);
+  hServo_Init(&hservo, &servoTim, servoTimChannel, 800, 2200, 0);
+  ypvsMap_Init(&map, steps, 3000, 6000);
   selfTest();
 }
 
 
 void ypvsRun(void){
-
-  if (ypvsMap_IsInitialized(&map)) {
-    hServo_Write_us(&hservo, getCurrentServoPulseWidth(&map));
-  }
-  else if (ypvsErrorHandler) {
-    ypvsErrorHandler();
-  }
+  //hServo_Write_us(&hservo,getCurrentServoPulseWidth(&map));
+ if(getEngineRPM() > 5000){
+   hServo_Write_us(&hservo, hservo.maxPulseWidth);
+ }
+ else if(getEngineRPM() < 4000){
+   hServo_Write_us(&hservo, hservo.minPulseWidth);
+ }
 
 //  printf("%u %u\n", getCurrentStep(&map).ypvsOpenPercentage, getEngineRPM());
 }

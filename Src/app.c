@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "framework.h"
 #include "app.h"
-#include "../lib/YpvsDriver/ypvsDriver.h"
+#include "../Core/YpvsDriver/ypvsDriver.h"
 #include "YPVS/Ypvs.h"
 
 
@@ -27,13 +27,17 @@ static void runYpvsHandler(tickTimer* tim) {
   ypvsRun();
 }
 
+
+
 static void ypvsErrorHandler(void) {
   puts("YPVS INTERNAL ERROR");
   tickTimer_Stop(&ledBuiltinTim);
-  
+
   tickTimer_Stop(&ypvsTim);
   HAL_GPIO_WritePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin, GPIO_PIN_SET);
 }
+
+
 
 // ***** Initializations *******
 
@@ -44,6 +48,10 @@ static void initTimers(void) {
   HAL_TIM_IC_Start(&rpmTim, rpmTimChannel_2);
   HAL_TIM_PWM_Start(&servoTim, servoTimChannel);
   HAL_TIM_Base_Start_IT(&htim1);
+
+  tickTimer_Init(&ledBuiltinTim, 500, true, ledBuiltinBlink);
+  tickTimer_Init(&ypvsTim, 1, true, runYpvsHandler);
+  tickTimer_Init(&rpmStateCheckTim, 25, true, checkRPMstate);
 }
 
 
@@ -59,20 +67,20 @@ void initPeripherals(void) {
 
   initTimers();
   uart_init_printf(&huart1);
+  rpmMeterInit();
   ypvsInit(ypvsErrorHandler);
-
-
-  UARTDMA_Init(&huartDma, &huart1,USART1_StringReceivedCallback);
+  UARTDMA_Init(&huartDma, &huart1, USART1_StringReceivedCallback);
   AT_CommandService_Init(&atCommandService, commands, &huart1, AT_CNT);
 
-  tickTimer_Init(&ledBuiltinTim, 200, true, ledBuiltinBlink);
-  tickTimer_Init(&ypvsTim, 40, true, runYpvsHandler);
-  tickTimer_Init(&rpmStateCheckTim, 250, true, checkRPMstate);
+  puts("System start");
+
 }
 
 void mainLoop(void) {
   tickTimer_RunTask(&ledBuiltinTim);
-  tickTimer_RunTask(&ypvsTim);
+ // tickTimer_RunTask(&ypvsTim);
+  ypvsRun();
+  tickTimer_RunTask(&rpmStateCheckTim);
   UARTDMA_StringReceivedEvent(&huartDma, USART1_StringBuffer);
 }
 
@@ -80,7 +88,7 @@ void mainLoop(void) {
 
 void handle_TIM_IC_interrupts(TIM_HandleTypeDef* htim) {
   if ( htim->Instance == rpmTim.Instance ) {
-    if (htim->Channel == rpmTimActiveChannel_1) {
+    if ( htim->Channel == rpmTimActiveChannel_1 ) {
       rpmMeterIrqHandler(htim, rpmTimChannel_1);
     }
   }

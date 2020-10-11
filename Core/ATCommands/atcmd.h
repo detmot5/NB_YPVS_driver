@@ -5,7 +5,7 @@
 #ifndef YPVS_ATCMD_H
 #define YPVS_ATCMD_H
 #include "framework.h"
-#define AT_CNT 3
+#define AT_CNT 4
 
 
 extern AT_CommandService_t atCommandService;

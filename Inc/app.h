@@ -1,27 +1,24 @@
 #ifndef APP_H
 #define APP_H
-#include <TickTimer.h>
-#include <UartPrintf.h>
 #include <RPMmeter.h>
 
-
-
-#define DEBUG_MODE 0
-
-
-
-
-
-extern tickTimer ledBuiltinTim;
-#if DEBUG_MODE
-extern tickTimer simulateRPMTim;
+#ifdef __cplusplus
+extern "C"{
 #endif
 
 
 void initPeripherals(void);
+
 void mainLoop(void);
-void handle_TIM_IC_interrupts(TIM_HandleTypeDef* htim);
-void handle_TIM_PeriodElapsed_interrupts(TIM_HandleTypeDef* htim);
+
+void handle_TIM_IC_interrupts(TIM_HandleTypeDef *htim);
+
+void handle_TIM_PeriodElapsed_interrupts(TIM_HandleTypeDef *htim);
+
+#ifdef __cplusplus
+}
+#endif
 #endif // !APP_H
+
 
 

@@ -24,8 +24,8 @@ extern "C" {
 #endif
 
 
-#define DMA_RX_BUFFER_SIZE          64
-#define UART_BUFFER_SIZE            256
+#define DMA_RX_BUFFER_SIZE          256
+#define UART_BUFFER_SIZE            1024
 
 typedef struct UARTDMA_struct {
     UART_HandleTypeDef *huart;          // UART handler
