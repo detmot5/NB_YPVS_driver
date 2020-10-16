@@ -17,15 +17,21 @@ void rpmMeterIrqHandler(TIM_HandleTypeDef* htim, uint32_t timChannel) {
 	uint32_t capturedValue = HAL_TIM_ReadCapturedValue(htim, timChannel);
 	const uint32_t timPrescaler = htim->Init.Prescaler + 1;
 
-	if(capturedValue != 0) {	
+	if(capturedValue != 0) {
 		engineFrequency = (SystemCoreClock / timPrescaler) / capturedValue;
 		engineRPM = engineFrequency * MINUTE;
-		CircularBuffer_PushBack(&rpmBuffer, engineRPM);
 	} else {
 		engineFrequency = 0;
 		engineRPM = 0;
 	}
+  CircularBuffer_PushBack(&rpmBuffer, engineRPM);
 }
+
+void rpmMeterTimPeriodElapsedIrqHandler(TIM_HandleTypeDef* htim){
+  CircularBuffer_Fill(&rpmBuffer, 0);
+}
+
+
 
 void rpmMeterInit() {
   CircularBuffer_Init(&rpmBuffer, rpmBufferArray, RPM_BUFFER_SIZE);

@@ -14,6 +14,7 @@ typedef struct CircularBuffer_s{
 void CircularBuffer_Init(volatile CircularBuffer_t* hbuff, volatile uint16_t* buffer, uint16_t size);
 bool CircularBuffer_PushBack(volatile CircularBuffer_t* hbuff, uint16_t data);
 bool CircularBuffer_Get(volatile CircularBuffer_t* hbuff, uint16_t* data);
+bool CircularBuffer_Fill(volatile CircularBuffer_t* hbuff, uint16_t value);
 uint32_t CircularBuffer_GetAverageValue(volatile CircularBuffer_t* hbuff);
 
 

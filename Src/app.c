@@ -48,6 +48,7 @@ static void initTimers(void) {
   HAL_TIM_IC_Start(&rpmTim, rpmTimChannel_2);
   HAL_TIM_PWM_Start(&servoTim, servoTimChannel);
   HAL_TIM_Base_Start_IT(&htim1);
+  HAL_TIM_Base_Start_IT(&rpmTim);
 
   tickTimer_Init(&ledBuiltinTim, 500, true, ledBuiltinBlink);
   tickTimer_Init(&ypvsTim, 1, true, runYpvsHandler);
@@ -95,8 +96,11 @@ void handle_TIM_IC_interrupts(TIM_HandleTypeDef* htim) {
 }
 
 void handle_TIM_PeriodElapsed_interrupts(TIM_HandleTypeDef* htim) {
+
   if ( htim->Instance == TIM1 ) {
     HAL_GPIO_TogglePin(SIM_RPM_GPIO_Port, SIM_RPM_Pin);
+  } else if ( htim->Instance == rpmTim.Instance ){
+    //rpmMeterTimPeriodElapsedIrqHandler(htim);
   }
 }
 

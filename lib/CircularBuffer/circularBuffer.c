@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdbool.h>
 #include "circularBuffer.h"
 
@@ -11,6 +12,7 @@ void CircularBuffer_Init(volatile CircularBuffer_t* hbuff, volatile uint16_t* bu
 }
 
 bool CircularBuffer_PushBack(volatile CircularBuffer_t* hbuff, uint16_t data) {
+  if(hbuff == NULL) return false;
   uint16_t nextHead = hbuff->head + 1;
 
   if(nextHead >= hbuff->size) nextHead = 0;
@@ -24,6 +26,7 @@ bool CircularBuffer_PushBack(volatile CircularBuffer_t* hbuff, uint16_t data) {
 
 
 bool CircularBuffer_Get(volatile CircularBuffer_t* hbuff, uint16_t* data) {
+  if(hbuff == NULL) return false;
   if(hbuff->head == hbuff->tail) return false;
 
   hbuff->tail++;
@@ -33,6 +36,13 @@ bool CircularBuffer_Get(volatile CircularBuffer_t* hbuff, uint16_t* data) {
   return true;
 }
 
+
+bool CircularBuffer_Fill(volatile CircularBuffer_t* hbuff, uint16_t value){
+  if(hbuff == NULL) return false;
+  for(uint16_t i = 0; i < hbuff->size; i++){
+    hbuff->buffer[i] = value;
+  }
+}
 
 
 

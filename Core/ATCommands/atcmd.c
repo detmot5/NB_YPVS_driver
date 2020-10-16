@@ -32,10 +32,7 @@ atresult_t at_rpm_service(uint8_t inout, char* params){
   if(res < 2499 || res > 19999) return AT_ERROR;
 
   __HAL_TIM_SET_AUTORELOAD(&htim1, res);
-
-
-
-
+  
   }
   else if(inout == ask){
     char answer[20];

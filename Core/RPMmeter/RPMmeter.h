@@ -8,6 +8,7 @@
 #define MAX_FREQ 200
 
 void rpmMeterIrqHandler(TIM_HandleTypeDef* htim, uint32_t timChannel);
+void rpmMeterTimPeriodElapsedIrqHandler(TIM_HandleTypeDef* htim);
 void rpmMeterInit();
 uint32_t getEngineRPM();
 uint32_t getEngineFrequency();
