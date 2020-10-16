@@ -10,7 +10,7 @@
 tickTimer ledBuiltinTim;
 tickTimer ypvsTim;
 tickTimer rpmStateCheckTim;
-
+tickTimer isEngineRunningTim;
 
 UARTDMA_HandleTypeDef huartDma;
 
@@ -25,6 +25,10 @@ static void ledBuiltinBlink(tickTimer* tim) {
 
 static void runYpvsHandler(tickTimer* tim) {
   ypvsRun();
+}
+
+static void isEngineRunningHandler(tickTimer* tim){
+  checkIsEngineRunning();
 }
 
 
@@ -53,6 +57,7 @@ static void initTimers(void) {
   tickTimer_Init(&ledBuiltinTim, 500, true, ledBuiltinBlink);
   tickTimer_Init(&ypvsTim, 1, true, runYpvsHandler);
   tickTimer_Init(&rpmStateCheckTim, 25, true, checkRPMstate);
+  tickTimer_Init(&isEngineRunningTim, 1, true, isEngineRunningHandler);
 }
 
 
@@ -78,10 +83,11 @@ void initPeripherals(void) {
 }
 
 void mainLoop(void) {
-  tickTimer_RunTask(&ledBuiltinTim);
- // tickTimer_RunTask(&ypvsTim);
   ypvsRun();
+  tickTimer_RunTask(&ledBuiltinTim);
   tickTimer_RunTask(&rpmStateCheckTim);
+  tickTimer_RunTask(&isEngineRunningTim);
+
   UARTDMA_StringReceivedEvent(&huartDma, USART1_StringBuffer);
 }
 
@@ -96,11 +102,8 @@ void handle_TIM_IC_interrupts(TIM_HandleTypeDef* htim) {
 }
 
 void handle_TIM_PeriodElapsed_interrupts(TIM_HandleTypeDef* htim) {
-
   if ( htim->Instance == TIM1 ) {
     HAL_GPIO_TogglePin(SIM_RPM_GPIO_Port, SIM_RPM_Pin);
-  } else if ( htim->Instance == rpmTim.Instance ){
-    //rpmMeterTimPeriodElapsedIrqHandler(htim);
   }
 }
 

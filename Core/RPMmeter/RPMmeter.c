@@ -6,12 +6,20 @@
 #define RPM_BUFFER_SIZE 25
 #define RPM_OFFSET 250
 
-static volatile uint16_t rpmBufferArray[RPM_BUFFER_SIZE] ;
-static volatile CircularBuffer_t rpmBuffer;
-static volatile uint32_t engineRPM;
-static volatile uint32_t engineFrequency;           // in Hz
-static volatile uint8_t rpmState;
+static volatile uint16_t rpmBufferArray[RPM_BUFFER_SIZE] = {0};
+static volatile CircularBuffer_t rpmBuffer = {0};
+static volatile uint32_t engineRPM = 0;
+static volatile uint32_t engineFrequency = 0;           // in Hz
+static volatile uint8_t rpmState = 0;
 
+
+
+static volatile bool _isEngineRunning = false;
+static volatile uint16_t engineRunningCounter = 0;
+
+static inline void refreshEngineRunningCounter(){
+  engineRunningCounter = 1000;
+}
 
 void rpmMeterIrqHandler(TIM_HandleTypeDef* htim, uint32_t timChannel) {
 	uint32_t capturedValue = HAL_TIM_ReadCapturedValue(htim, timChannel);
@@ -25,11 +33,10 @@ void rpmMeterIrqHandler(TIM_HandleTypeDef* htim, uint32_t timChannel) {
 		engineRPM = 0;
 	}
   CircularBuffer_PushBack(&rpmBuffer, engineRPM);
+	refreshEngineRunningCounter();
 }
 
-void rpmMeterTimPeriodElapsedIrqHandler(TIM_HandleTypeDef* htim){
-  CircularBuffer_Fill(&rpmBuffer, 0);
-}
+
 
 
 
@@ -37,6 +44,15 @@ void rpmMeterInit() {
   CircularBuffer_Init(&rpmBuffer, rpmBufferArray, RPM_BUFFER_SIZE);
 }
 
+void checkIsEngineRunning(){
+  if(engineRunningCounter > 0) {
+    --engineRunningCounter;
+    _isEngineRunning = true;
+  } else {
+    _isEngineRunning = false;
+    CircularBuffer_Fill(&rpmBuffer, 0); //set RPM to 0
+  }
+}
 
 
 void checkRPMstate(){
