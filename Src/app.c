@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "framework.h"
 #include "app.h"
-#include "../Core/YpvsDriver/ypvsDriver.h"
-#include "YPVS/Ypvs.h"
+#include "ypvsDriver.h"
+#include "Ypvs.h"
 
 
 // ***** Peripheral Handlers *******
@@ -61,7 +61,7 @@ static void initTimers(void) {
 }
 
 
-static void USART1_StringReceivedCallback(UARTDMA_HandleTypeDef* huartdma, char* str){
+static void USART1_StringReceivedCallback(UARTDMA_HandleTypeDef* huartdma, char* str) {
   AT_StringParseEventCallback(&atCommandService, str);
 }
 

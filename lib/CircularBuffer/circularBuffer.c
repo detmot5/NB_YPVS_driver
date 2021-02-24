@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdbool.h>
 #include "circularBuffer.h"
 
 
@@ -12,11 +10,11 @@ void CircularBuffer_Init(volatile CircularBuffer_t* hbuff, volatile uint16_t* bu
 }
 
 bool CircularBuffer_PushBack(volatile CircularBuffer_t* hbuff, uint16_t data) {
-  if(hbuff == NULL) return false;
+  if (hbuff == NULL) return false;
   uint16_t nextHead = hbuff->head + 1;
 
-  if(nextHead >= hbuff->size) nextHead = 0;
-  if(nextHead == hbuff->tail) hbuff->tail = 0;
+  if (nextHead >= hbuff->size) nextHead = 0;
+  if (nextHead == hbuff->tail) hbuff->tail = 0;
 
   hbuff->buffer[nextHead] = data;
 
@@ -26,27 +24,28 @@ bool CircularBuffer_PushBack(volatile CircularBuffer_t* hbuff, uint16_t data) {
 
 
 bool CircularBuffer_Get(volatile CircularBuffer_t* hbuff, uint16_t* data) {
-  if(hbuff == NULL) return false;
-  if(hbuff->head == hbuff->tail) return false;
+  if (hbuff == NULL) return false;
+  if (hbuff->head == hbuff->tail) return false;
 
   hbuff->tail++;
-  if(hbuff->tail == hbuff->size) hbuff->tail = 0;
+  if (hbuff->tail == hbuff->size) hbuff->tail = 0;
 
   *data = hbuff->buffer[hbuff->tail];
   return true;
 }
 
 
-bool CircularBuffer_Fill(volatile CircularBuffer_t* hbuff, uint16_t value){
-  if(hbuff == NULL) return false;
-  for(uint16_t i = 0; i < hbuff->size; i++){
+bool CircularBuffer_Fill(volatile CircularBuffer_t* hbuff, uint16_t value) {
+  if (hbuff == NULL) return false;
+  for (uint16_t i = 0; i < hbuff->size; i++) {
     hbuff->buffer[i] = value;
   }
+  return true;
 }
 
 
 
-uint32_t CircularBuffer_GetAverageValue(volatile CircularBuffer_t* hbuff){
+uint32_t CircularBuffer_GetAverageValue(volatile CircularBuffer_t* hbuff) {
   uint32_t tmp = 0;
 
   for (uint16_t i = 0; i < hbuff->size; i++) {

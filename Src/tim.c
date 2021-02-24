@@ -22,10 +22,10 @@
 
 /* USER CODE BEGIN 0 */
 
-
+#ifdef PLATFORMIO
 // ****************if use platformio*********************
 #define HAL_TIM_SlaveConfigSynchro HAL_TIM_SlaveConfigSynchronization
-
+#endif
 
 
 /* USER CODE END 0 */

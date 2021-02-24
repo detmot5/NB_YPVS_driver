@@ -1,7 +1,11 @@
 #ifndef CIRCULAR_BUFFER_H
 #define CIRCULAR_BUFFER_H
 
+#include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
+
+typedef int32_t CircularBufferDataType;
 
 typedef struct CircularBuffer_s{
   volatile uint16_t* buffer;

@@ -1,7 +1,7 @@
 //
 // Created by norbe on 18/09/2020.
 //
-#include "../YPVS/Ypvs.h"
+#include "Ypvs.h"
 #include "framework.h"
 #include "ypvsDriver.h"
 
@@ -9,7 +9,6 @@ static HardwareServo_t hservo;
 static ypvsMap map;
 
 static void (*ypvsErrorHandler)(void);
-
 
 ypvsMapStep steps[MAX_STEPS] = {
         {3000, 0},

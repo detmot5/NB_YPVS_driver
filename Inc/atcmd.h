@@ -10,4 +10,5 @@
 
 extern AT_CommandService_t atCommandService;
 extern atcmd_t commands[];
+
 #endif //YPVS_ATCMD_H
